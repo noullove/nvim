@@ -32,7 +32,7 @@ autocmd("VimLeavePre", {
 -- keymap
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("n", "<leader>lm", function()
-   require("telescope.builtin").lsp_document_symbols({symbols={"method","function"}})
+  require("telescope.builtin").lsp_document_symbols({ symbols = { "class", "method", "function" } })
 end, { desc = "LSP document symbols" } )
 map("n", "<leader>cd", require("telescope").extensions.zoxide.list, { desc = "Telescope zoxide list" })
 
