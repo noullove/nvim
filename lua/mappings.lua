@@ -20,21 +20,21 @@ autocmd("BufReadPost", {
   end,
 })
 
--- dynamic terminal padding
-autocmd("VimEnter", {
-  command = ":silent !kitty @ set-spacing padding=0 margin=0",
-})
-
-autocmd("VimLeavePre", {
-  command = ":silent !kitty @ set-spacing padding=20 margin=10",
-})
-
 -- keymap
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map("n", "<leader>lm", function()
-  require("telescope.builtin").lsp_document_symbols({ symbols = { "class", "method", "function" } })
-end, { desc = "LSP document symbols" } )
 map("n", "<leader>cd", require("telescope").extensions.zoxide.list, { desc = "Telescope zoxide list" })
+map("n", "<leader>cf", require("conform").format, { desc = "Formatting" })
+map("n", "<leader>td", function ()
+  require("twilight").toggle()
+end, { desc = "Dimming" })
+
+map("n", "<leader>tz", function ()
+  require("zen-mode").toggle({
+    window = {
+      width = .85 -- width will be 85% of the editor width
+    }
+  })
+end, { desc = "Zen Mode" })
 
 -- volt menu
 -- Keyboard users
