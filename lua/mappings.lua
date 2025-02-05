@@ -1,10 +1,10 @@
 require("nvchad.mappings")
 
--- add yours here
+-- 변수 설정
 local map = vim.keymap.set
 local autocmd = vim.api.nvim_create_autocmd
 
--- restore cursor position
+-- 마지막 커서 포지션 로드
 autocmd("BufReadPost", {
 	pattern = "*",
 	callback = function()
@@ -20,7 +20,7 @@ autocmd("BufReadPost", {
 	end,
 })
 
--- inlay hint enable
+-- inlay 힌트 설정
 autocmd("LspAttach", {
 	desc = "Enable inlay hints",
 	callback = function(event)
@@ -34,9 +34,25 @@ autocmd("LspAttach", {
 	end,
 })
 
--- keymap
+-- 도움말 창은 항상 오른쪽 창 분할로 표시
+autocmd("BufWinEnter", {
+  pattern = "*",
+  callback = function ()
+    if vim.bo.buftype == "help" then
+      vim.cmd("wincmd L")
+    end
+  end,
+})
+
+-- 사용자 키 맵핑
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("n", "<leader>cd", require("telescope").extensions.zoxide.list, { desc = "Telescope zoxide list" })
+map("n", "<leader>tm", require("telescope").extensions.file_browser.file_browser, { desc = "Telescope file manager" })
+map("n", "<leader>mv", function()
+	require("render-markdown").toggle()
+end, { desc = "Markdown Preview" })
+
+-- zen mode
 map("n", "<leader>td", function()
 	require("twilight").toggle()
 end, { desc = "Dimming" })
@@ -48,6 +64,23 @@ map("n", "<leader>tz", function()
 		},
 	})
 end, { desc = "Zen Mode" })
+
+-- lagygit
+vim.keymap.set({ "n", "t" }, "<A-g>", function()
+	require("nvchad.term").toggle({
+		pos = "float",
+		float_opts = {
+			border = "rounded",
+			style = "minimal",
+			row = 0.05,
+			col = 0.1,
+			width = 0.8,
+			height = 0.8,
+		},
+		id = "lagygit",
+		cmd = "lazygit",
+	})
+end, { desc = "lazygit toggle" })
 
 -- volt menu
 -- Keyboard users

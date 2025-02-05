@@ -1,9 +1,5 @@
-require "nvchad.options"
+require("nvchad.options")
 
--- add yours here!
 local o = vim.o
-o.cursorlineopt ='both' -- to enable cursorline!
-o.fileencodings = 'utf-8,euc-kr,cp949'
-
--- local o = vim.o
--- o.cursorlineopt ='both' -- to enable cursorline!
+o.cursorlineopt = "both" -- cursorline 설정
+o.fileencodings = "utf-8,euc-kr,cp949" -- 파일 인코딩
