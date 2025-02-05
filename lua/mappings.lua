@@ -4,6 +4,14 @@ require("nvchad.mappings")
 local map = vim.keymap.set
 local autocmd = vim.api.nvim_create_autocmd
 
+-- IME 설정 (입력모드가 아닐 경우 영문설정)
+-- im-select 설치 필요
+autocmd("ModeChanged", {
+	callback = function()
+		vim.fn.system("im-select com.apple.keylayout.ABC")
+	end,
+})
+
 -- 마지막 커서 포지션 로드
 autocmd("BufReadPost", {
 	pattern = "*",
@@ -36,12 +44,12 @@ autocmd("LspAttach", {
 
 -- 도움말 창은 항상 오른쪽 창 분할로 표시
 autocmd("BufWinEnter", {
-  pattern = "*",
-  callback = function ()
-    if vim.bo.buftype == "help" then
-      vim.cmd("wincmd L")
-    end
-  end,
+	pattern = "*",
+	callback = function()
+		if vim.bo.buftype == "help" then
+			vim.cmd("wincmd L")
+		end
+	end,
 })
 
 -- 사용자 키 맵핑
@@ -66,7 +74,7 @@ map("n", "<leader>tz", function()
 end, { desc = "Zen Mode" })
 
 -- lagygit
-vim.keymap.set({ "n", "t" }, "<A-g>", function()
+map({ "n", "t" }, "<A-g>", function()
 	require("nvchad.term").toggle({
 		pos = "float",
 		float_opts = {
@@ -84,13 +92,13 @@ end, { desc = "lazygit toggle" })
 
 -- volt menu
 -- Keyboard users
-vim.keymap.set("n", "<C-t>", function()
+map("n", "<C-t>", function()
 	require("menu").open("default")
 end, {})
 
 -- volt menu
 -- mouse users + nvimtree users!
-vim.keymap.set({ "n", "v" }, "<RightMouse>", function()
+map({ "n", "v" }, "<RightMouse>", function()
 	require("menu.utils").delete_old_menus()
 
 	vim.cmd.exec('"normal! \\<RightMouse>"')
@@ -101,3 +109,10 @@ vim.keymap.set({ "n", "v" }, "<RightMouse>", function()
 
 	require("menu").open(options, { mouse = true })
 end, {})
+
+map({ "n", "v" }, "<leader>cq", function()
+	local input = vim.fn.input("Quick Chat: ")
+	if input ~= "" then
+		require("CopilotChat").ask(input, { selection = require("CopilotChat.select").visual })
+	end
+end, { desc = "CopilotChat - Quick chat" })

@@ -31,11 +31,6 @@ require("lazy").setup({
 -- 플러그인 설정 변경
 require("configs.overrides")
 
--- nvim-notify 투명도 수정
-require("notify").setup({
-	background_colour = "#000000",
-})
-
 -- 테마 및 외관 설정
 dofile(vim.g.base46_cache .. "defaults")
 dofile(vim.g.base46_cache .. "statusline")

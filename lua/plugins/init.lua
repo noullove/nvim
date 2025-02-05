@@ -15,7 +15,7 @@ return {
 	{
 		"hrsh7th/nvim-cmp",
 		config = function()
-      require("configs.cmp")
+			require("configs.cmp")
 		end,
 	},
 
@@ -67,15 +67,22 @@ return {
 	-- dimming / zen mode
 	"folke/twilight.nvim",
 	"folke/zen-mode.nvim",
-  -- telescope file manager
-  -- telescope zoxide
-  "nvim-telescope/telescope-file-browser.nvim",
-  "jvgrootveld/telescope-zoxide",
+	-- telescope file manager
+	-- telescope zoxide
+	"nvim-telescope/telescope-file-browser.nvim",
+	"jvgrootveld/telescope-zoxide",
 
 	-- markdown rendering
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
 		after = { "nvim-treesitter" },
 		requires = { "nvim-tree/nvim-web-devicons", opt = true }, -- if you prefer nvim-web-devicons
+	},
+
+	{
+		-- copilot
+		"CopilotC-Nvim/CopilotChat.nvim",
+		dependencies = { "github/copilot.vim" },
+		lazy = false,
 	},
 }

@@ -13,6 +13,12 @@ M.base46 = {
 		Comment = { italic = true },
 		["@comment"] = { italic = true },
 	},
+  hl_add = {
+    -- nvim-notify 투명도 수정
+    NotifyBackground = {
+      bg = "#000000"
+    }
+  }
 }
 
 M.nvdash = { load_on_startup = true }
