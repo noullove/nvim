@@ -53,6 +53,12 @@ autocmd("BufWinEnter", {
 })
 
 -- 사용자 키 맵핑
+map("n", "<Esc>", function()
+	vim.fn.system("im-select com.apple.keylayout.ABC")
+	vim.cmd("noh")
+end, { desc = "Quit" })
+-- 한글모드 일때도 ESC로 영문모드로 전환
+map({ "i", "v" }, "<Esc>", "<Esc>", { noremap = true, silent = true })
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("n", "<leader>cd", require("telescope").extensions.zoxide.list, { desc = "Telescope zoxide list" })
 map("n", "<leader>tm", require("telescope").extensions.file_browser.file_browser, { desc = "Telescope file manager" })

@@ -52,10 +52,21 @@ M.ui = {
 			"lsp",
 			"cwd",
 			"cursor",
-			"position",
 		},
 		modules = {
-			position = "%l:%c",
+      cursor = function()
+        local config = require("nvconfig").ui.statusline
+        local sep_style = config.separator_style
+        local utils = require "nvchad.stl.utils"
+
+        local sep_icons = utils.separators
+        local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
+
+        local sep_l = separators["left"]
+        local sep_r = separators["right"]
+
+        return "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# %p%% %l:%c"
+      end,
 			encoding = function()
 				local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
 				return string.upper(enc)
