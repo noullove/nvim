@@ -2,75 +2,44 @@ require("nvchad.mappings")
 
 -- 변수 설정
 local map = vim.keymap.set
-local autocmd = vim.api.nvim_create_autocmd
-
--- IME 설정 (입력모드가 아닐 경우 영문설정)
--- im-select 설치 필요
-autocmd("ModeChanged", {
-	callback = function()
-		vim.fn.system("im-select com.apple.keylayout.ABC")
-	end,
-})
-
--- 마지막 커서 포지션 로드
-autocmd("BufReadPost", {
-	pattern = "*",
-	callback = function()
-		local line = vim.fn.line("'\"")
-		if
-			line > 1
-			and line <= vim.fn.line("$")
-			and vim.bo.filetype ~= "commit"
-			and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
-		then
-			vim.cmd('normal! g`"')
-		end
-	end,
-})
-
--- inlay 힌트 설정
-autocmd("LspAttach", {
-	desc = "Enable inlay hints",
-	callback = function(event)
-		local id = vim.tbl_get(event, "data", "client_id")
-		local client = id and vim.lsp.get_client_by_id(id)
-		if client == nil or not client.supports_method("textDocument/inlayHint") then
-			return
-		end
-
-		vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
-	end,
-})
-
--- 도움말 창은 항상 오른쪽 창 분할로 표시
-autocmd("BufWinEnter", {
-	pattern = "*",
-	callback = function()
-		if vim.bo.buftype == "help" then
-			vim.cmd("wincmd L")
-		end
-	end,
-})
 
 -- 사용자 키 맵핑
+-- visual block mode
+map('n', '<C-v>', '<C-v>', { noremap = true, silent = true })
+
+-- 한글모드 일때도 ESC 로 영문모드로 전환
 map("n", "<Esc>", function()
 	vim.fn.system("im-select com.apple.keylayout.ABC")
 	vim.cmd("noh")
-end, { desc = "Quit" })
--- 한글모드 일때도 ESC로 영문모드로 전환
-map({ "i", "v" }, "<Esc>", "<Esc>", { noremap = true, silent = true })
+end, { desc = "Clear" })
+
+-- command mode
 map("n", ";", ":", { desc = "CMD enter command mode" })
+
+-- Telescope
 map("n", "<leader>cd", require("telescope").extensions.zoxide.list, { desc = "Telescope zoxide list" })
 map("n", "<leader>tm", require("telescope").extensions.file_browser.file_browser, { desc = "Telescope file manager" })
+
+-- markdown preview
 map("n", "<leader>mv", function()
 	require("render-markdown").toggle()
 end, { desc = "Markdown Preview" })
 
--- zen mode
+-- timerly
+map("n", "<A-t>", function()
+  require("timerly").toggle()
+end, { desc = "Timerly" })
+
+-- showkeys
+map("n", "<leader>sk", function()
+  require("showkeys").toggle()
+end, { desc = "Show keys" })
+
+-- dimming
 map("n", "<leader>td", function()
 	require("twilight").toggle()
 end, { desc = "Dimming" })
-
+-- zen mode
 map("n", "<leader>tz", function()
 	require("zen-mode").toggle({
 		window = {
@@ -99,7 +68,7 @@ end, { desc = "lazygit toggle" })
 -- volt menu
 -- Keyboard users
 map("n", "<C-t>", function()
-	require("menu").open("default")
+	require("menu").open("default", { border = true })
 end, {})
 
 -- volt menu
@@ -113,9 +82,10 @@ map({ "n", "v" }, "<RightMouse>", function()
 	local buf = vim.api.nvim_win_get_buf(vim.fn.getmousepos().winid)
 	local options = vim.bo[buf].ft == "NvimTree" and "nvimtree" or "default"
 
-	require("menu").open(options, { mouse = true })
+	require("menu").open(options, { mouse = true, border = true })
 end, {})
 
+-- copilot chat
 map({ "n", "v" }, "<leader>cq", function()
 	local input = vim.fn.input("Quick Chat: ")
 	if input ~= "" then

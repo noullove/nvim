@@ -37,9 +37,9 @@ dofile(vim.g.base46_cache .. "statusline")
 
 -- 기타 설정
 require("options")
-require("nvchad.autocmds")
+require("autocmds")
 
--- 키 맵핑을 비동기로 로드
+-- 비동기로 로드
 vim.schedule(function()
 	require("mappings")
 end)

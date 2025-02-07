@@ -30,6 +30,8 @@ return {
 
 	{
 		"folke/trouble.nvim",
+    opts = {},
+    cmd = "Trouble",
 		keys = {
 			{
 				"<leader>xx",
@@ -79,10 +81,29 @@ return {
 		requires = { "nvim-tree/nvim-web-devicons", opt = true }, -- if you prefer nvim-web-devicons
 	},
 
+  -- copilot
 	{
-		-- copilot
 		"CopilotC-Nvim/CopilotChat.nvim",
 		dependencies = { "github/copilot.vim" },
 		lazy = false,
 	},
+
+  -- showkeys
+	{
+    "nvzone/showkeys",
+    cmd = "ShowkeysToggle",
+    opts = {
+      timeout = 1,
+      maxkeys = 5,
+      position = "top-right",
+    }
+  },
+  -- timerly
+	{
+    "nvzone/timerly",
+    cmd = "TimerlyToggle",
+    opts = {
+      position = "bottom-right",
+    }
+  },
 }

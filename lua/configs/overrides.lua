@@ -79,6 +79,12 @@ require("nvim-tree").setup({
 	},
 })
 
+require("mason").setup({
+  ui = {
+    border = "rounded",
+  }
+})
+
 require("which-key").setup({
 	preset = "modern",
 })
