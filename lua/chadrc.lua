@@ -13,12 +13,12 @@ M.base46 = {
 		Comment = { italic = true },
 		["@comment"] = { italic = true },
 	},
-  hl_add = {
-    -- nvim-notify 투명도 수정
-    NotifyBackground = {
-      bg = "#000000"
-    }
-  }
+	hl_add = {
+		-- nvim-notify 투명도 수정
+		NotifyBackground = {
+			bg = "#000000",
+		},
+	},
 }
 
 M.nvdash = { load_on_startup = true }
@@ -54,19 +54,21 @@ M.ui = {
 			"cursor",
 		},
 		modules = {
-      cursor = function()
-        local config = require("nvconfig").ui.statusline
-        local sep_style = config.separator_style
-        local utils = require "nvchad.stl.utils"
+			cursor = function()
+				local config = require("nvconfig").ui.statusline
+				local sep_style = config.separator_style
+				local utils = require("nvchad.stl.utils")
 
-        local sep_icons = utils.separators
-        local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
+				local sep_icons = utils.separators
+				local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
 
-        local sep_l = separators["left"]
-        local sep_r = separators["right"]
+				local sep_l = separators["left"]
+				local sep_r = separators["right"]
+				-- Get the virtual column number
+				local virtcol = vim.fn.virtcol(".")
 
-        return "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# %p%% %l:%c"
-      end,
+				return "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# C:%v L:%l/%L %p%%"
+			end,
 			encoding = function()
 				local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
 				return string.upper(enc)
@@ -85,10 +87,10 @@ M.mason = {
 		"codelldb",
 		"css-lsp",
 		"html-lsp",
-    "prettier",
+		"prettier",
 		"pyright",
-    "isort",
-    "shfmt",
+		"isort",
+		"shfmt",
 	},
 }
 

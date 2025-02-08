@@ -16,37 +16,27 @@ end, { desc = "Clear" })
 -- command mode
 map("n", ";", ":", { desc = "CMD enter command mode" })
 
--- Telescope
-map("n", "<leader>cd", require("telescope").extensions.zoxide.list, { desc = "Telescope zoxide list" })
-map("n", "<leader>tm", require("telescope").extensions.file_browser.file_browser, { desc = "Telescope file manager" })
+-- new terminals
+map("n", "<leader>h", function()
+  require("nvchad.term").new { pos = "sp", size = 0.5 }
+end, { desc = "terminal new horizontal term" })
 
--- markdown preview
-map("n", "<leader>mv", function()
-	require("render-markdown").toggle()
-end, { desc = "Markdown Preview" })
+map("n", "<leader>v", function()
+  require("nvchad.term").new { pos = "vsp", size = 0.5 }
+end, { desc = "terminal new vertical term" })
 
--- timerly
-map("n", "<A-t>", function()
-  require("timerly").toggle()
-end, { desc = "Timerly" })
+-- toggleable
+map({ "n", "t" }, "<A-v>", function()
+  require("nvchad.term").toggle { pos = "vsp", size = 0.5, id = "vtoggleTerm" }
+end, { desc = "terminal toggleable vertical term" })
 
--- showkeys
-map("n", "<leader>sk", function()
-  require("showkeys").toggle()
-end, { desc = "Show keys" })
+map({ "n", "t" }, "<A-h>", function()
+  require("nvchad.term").toggle { pos = "sp", size = 0.5, id = "htoggleTerm" }
+end, { desc = "terminal toggleable horizontal term" })
 
--- dimming
-map("n", "<leader>td", function()
-	require("twilight").toggle()
-end, { desc = "Dimming" })
--- zen mode
-map("n", "<leader>tz", function()
-	require("zen-mode").toggle({
-		window = {
-			width = 0.85, -- width will be 85% of the editor width
-		},
-	})
-end, { desc = "Zen Mode" })
+map({ "n", "t" }, "<A-i>", function()
+  require("nvchad.term").toggle { pos = "float", float_opts = { row = 0.2, col = 0.2, width = 0.6, height = 0.6 }, id = "floatTerm" }
+end, { desc = "terminal toggle floating term" })
 
 -- lagygit
 map({ "n", "t" }, "<A-g>", function()
@@ -82,7 +72,7 @@ map({ "n", "v" }, "<RightMouse>", function()
 	local buf = vim.api.nvim_win_get_buf(vim.fn.getmousepos().winid)
 	local options = vim.bo[buf].ft == "NvimTree" and "nvimtree" or "default"
 
-	require("menu").open(options, { mouse = true, border = true })
+	require("me nu").open(options, { mouse = true, border = true })
 end, {})
 
 -- copilot chat

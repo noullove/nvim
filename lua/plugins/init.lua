@@ -26,6 +26,26 @@ return {
 			"MunifTanjim/nui.nvim",
 			"rcarriga/nvim-notify",
 		},
+    opts = {
+      lsp = {
+        signature = {
+          enabled = true,
+          auto_open = { enabled = false },
+        },
+        override = {
+          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+          ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
+        },
+      },
+      presets = {
+        bottom_search = false, -- use a classic bottom cmdline for search
+        command_palette = false, -- position the cmdline and popupmenu together
+        long_message_to_split = true, -- long messages will be sent to a split
+        inc_rename = false, -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = true, -- add a border to hover docs and signature help
+      },
+    },
 	},
 
 	{
@@ -67,25 +87,55 @@ return {
 	},
 
 	-- dimming / zen mode
-	"folke/twilight.nvim",
-	"folke/zen-mode.nvim",
+  {
+    "folke/twilight.nvim",
+    keys = {
+      { "<leader>td", "<cmd>Twilight<cr>", desc = "Dimming" },
+    },
+  },
+  {
+    "folke/zen-mode.nvim",
+    opts = {
+      window = {
+        width = 0.85, -- width will be 85% of the editor width
+      },
+    },
+    keys = {
+      { "<leader>tz", "<cmd>ZenMode<cr>", desc = "Zen Mode" },
+    },
+  },
 	-- telescope file manager
 	-- telescope zoxide
-	"nvim-telescope/telescope-file-browser.nvim",
-	"jvgrootveld/telescope-zoxide",
+  {
+	  "nvim-telescope/telescope-file-browser.nvim",
+    keys = {
+      { "<leader>tm", "<cmd>Telescope file_browser<cr>", desc = "File browser" },
+    },
+  },
+  {
+    "jvgrootveld/telescope-zoxide",
+    keys = {
+      { "<leader>cd", "<cmd>Telescope zoxide list<cr>", desc = "Zoxide" },
+    },
+  },
 
 	-- markdown rendering
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
 		after = { "nvim-treesitter" },
 		requires = { "nvim-tree/nvim-web-devicons", opt = true }, -- if you prefer nvim-web-devicons
+    ft = { "markdown", "copilot-chat" },
+    cmd = "RenderMarkdown",
+    keys = {
+      { "<leader>mv", "<cmd>RenderMarkdown toggle<cr>", desc = "Markdown Preview" },
+    },
 	},
 
   -- copilot
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
 		dependencies = { "github/copilot.vim" },
-		lazy = false,
+    opts = {},
 	},
 
   -- showkeys
@@ -96,7 +146,10 @@ return {
       timeout = 1,
       maxkeys = 5,
       position = "top-right",
-    }
+    },
+    keys = {
+      { "<leader>sk", "<cmd>ShowkeysToggle<cr>", desc = "Show keys" },
+    },
   },
   -- timerly
 	{
@@ -104,6 +157,9 @@ return {
     cmd = "TimerlyToggle",
     opts = {
       position = "bottom-right",
-    }
+    },
+    keys = {
+      { "<A-t>", "<cmd>TimerlyToggle<cr>", desc = "Timerly" },
+    },
   },
 }
