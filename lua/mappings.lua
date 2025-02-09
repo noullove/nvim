@@ -73,7 +73,7 @@ map({ "n", "v" }, "<RightMouse>", function()
 	local buf = vim.api.nvim_win_get_buf(vim.fn.getmousepos().winid)
 	local options = vim.bo[buf].ft == "NvimTree" and "nvimtree" or "default"
 
-	require("me nu").open(options, { mouse = true, border = true })
+	require("menu").open(options, { mouse = true, border = true })
 end, {})
 
 -- copilot chat
