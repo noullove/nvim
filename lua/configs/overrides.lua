@@ -50,6 +50,7 @@ require("nvim-treesitter.configs").setup({
 		"cmake",
 		"cpp",
 		"css",
+    "diff",
 		"html",
 		"java",
 		"json",

@@ -6,6 +6,7 @@ local map = vim.keymap.set
 -- 사용자 키 맵핑
 -- visual block mode
 map('n', '<C-v>', '<C-v>', { noremap = true, silent = true })
+map({ 'n', 'v' }, '<C-a>', 'ggVG', { noremap = true, silent = true })
 
 -- 한글모드 일때도 ESC 로 영문모드로 전환
 map("n", "<Esc>", function()
