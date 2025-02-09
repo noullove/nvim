@@ -2,6 +2,27 @@ require("nvchad.mappings")
 
 -- 변수 설정
 local map = vim.keymap.set
+local unmap = vim.keymap.del
+
+-- 플러그인 키 맵핑 삭제
+-- nvim-tree
+unmap("n", "<C-n>")
+unmap("n", "<leader>e")
+unmap("n", "<leader>n")
+
+-- telescope
+unmap("n", "<leader>ma")
+unmap("n", "<leader>fh")
+unmap("n", "<leader>fw")
+unmap("n", "<leader>fb")
+unmap("n", "<leader>gt")
+unmap("n", "<leader>ff")
+unmap("n", "<leader>pt")
+unmap("n", "<leader>fo")
+unmap("n", "<leader>cm")
+unmap("n", "<leader>fz")
+unmap("n", "<leader>th")
+unmap("n", "<leader>fa")
 
 -- 사용자 키 맵핑
 -- visual block mode
@@ -39,23 +60,6 @@ map({ "n", "t" }, "<A-i>", function()
   require("nvchad.term").toggle { pos = "float", float_opts = { row = 0.2, col = 0.2, width = 0.6, height = 0.6 }, id = "floatTerm" }
 end, { desc = "terminal toggle floating term" })
 
--- lagygit
-map({ "n", "t" }, "<A-g>", function()
-	require("nvchad.term").toggle({
-		pos = "float",
-		float_opts = {
-			border = "rounded",
-			style = "minimal",
-			row = 0.05,
-			col = 0.1,
-			width = 0.8,
-			height = 0.8,
-		},
-		id = "lagygit",
-		cmd = "lazygit",
-	})
-end, { desc = "lazygit toggle" })
-
 -- volt menu
 -- Keyboard users
 map("n", "<C-t>", function()
@@ -76,10 +80,8 @@ map({ "n", "v" }, "<RightMouse>", function()
 	require("menu").open(options, { mouse = true, border = true })
 end, {})
 
--- copilot chat
-map({ "n", "v" }, "<leader>cq", function()
-	local input = vim.fn.input("Quick Chat: ")
-	if input ~= "" then
-		require("CopilotChat").ask(input, { selection = require("CopilotChat.select").visual })
-	end
-end, { desc = "CopilotChat - Quick chat" })
+-- snacks
+map("n", "<leader>n", function() require('snacks').picker.notifications() end, { desc = "Notification History" })
+map("n", "<leader>e", function() require('snacks').explorer() end, { desc = "File Explorer" })
+map("n", "<leader>fb", function() require('snacks').picker.buffers() end, { desc = "Buffers" })
+map("n", "<leader>ff", function() require('snacks').picker.files() end, { desc = "Find Files" })
