@@ -69,3 +69,12 @@ autocmd("BufWinEnter", {
 		end
 	end,
 })
+
+-- Trouble 창이 열릴 때 CursorLine을 Visual과 동일하게 링크
+autocmd("FileType", {
+    pattern = "Trouble",
+    callback = function()
+        -- Trouble 창에서만 CursorLine을 Visual로 링크
+        vim.api.nvim_command("hi! link CursorLine Visual")
+    end,
+})

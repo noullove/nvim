@@ -30,7 +30,44 @@ return {
     ---@type snacks.Config
     opts = {
       bigfile = { enabled = true },
-      dashboard = { enabled = true },
+      dashboard = {
+        width = 40,
+        sections = function()
+          local header = [[
+      ████ ██████           █████      ██                    
+     ███████████             █████                            
+     █████████ ███████████████████ ███   ███████████  
+    █████████  ███    █████████████ █████ ██████████████  
+   █████████ ██████████ █████████ █████ █████ ████ █████  
+ ███████████ ███    ███ █████████ █████ █████ ████ █████ 
+██████  █████████████████████ ████ █████ █████ ████ ██████
+]]
+          local function greeting()
+            local hour = tonumber(vim.fn.strftime("%H"))
+            -- [02:00, 10:00) - morning, [10:00, 18:00) - day, [18:00, 02:00) - evening
+            local part_id = math.floor((hour + 6) / 8) + 1
+            local day_part = ({ "evening", "morning", "afternoon", "evening" })[part_id]
+            local username = os.getenv("USER") or os.getenv("USERNAME") or "user"
+            return ("Good %s, %s"):format(day_part, username)
+          end
+          -- stylua: ignore
+          return {
+            { padding = 0, text = { header, hl = "header" } },
+            { align = "center", desc = greeting(), padding = 2 },
+            { title = "Builtin Actions", indent = 2, padding = 1,
+              { icon = " ", key = "f", desc = "Find File",       action = ":lua Snacks.dashboard.pick('files')" },
+              { icon = " ", key = "n", desc = "New File",        action = ":ene | startinsert" },
+              { icon = " ", key = "s", desc = "Restore Session", section = "session" },
+              { icon = " ", key = "q", desc = "Quit",            action = ":qa" } },
+            { title = "Recent Projects", section = "projects", indent = 2, padding = 1 },
+            { title = "Maintenance Actions", indent = 2, padding = 2,
+              { icon = " ", key = "c", desc = "Config",      action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})", },
+              { icon = "󰒲 ", key = "l", desc = "Lazy",        action = ":Lazy" },
+              { icon = "󱁤 ", key = "m", desc = "Mason",       action = ":Mason" },                          },
+            { section = "startup" },
+          }
+        end,
+      },
       explorer = { enabled = true },
       indent = { enabled = true },
       input = { enabled = true },
@@ -48,7 +85,8 @@ return {
         notification = {
           -- wo = { wrap = true } -- Wrap notifications
         }
-      }
+      },
+      images = { enabled = true },
     },
     keys = {
       -- Top Pickers & Explorer
@@ -65,6 +103,7 @@ return {
       { "<leader>fg", function() require('snacks').picker.git_files() end, desc = "Find Git Files" },
       { "<leader>fp", function() require('snacks').picker.projects() end, desc = "Projects" },
       { "<leader>fr", function() require('snacks').picker.recent() end, desc = "Recent" },
+      { "<leader>fz", function() require('snacks').picker.zoxide() end, desc = "Zoxide" },
       -- git
       { "<leader>gb", function() require('snacks').picker.git_branches() end, desc = "Git Branches" },
       { "<leader>gl", function() require('snacks').picker.git_log() end, desc = "Git Log" },
@@ -118,7 +157,6 @@ return {
       { "<leader>gg", function() require('snacks').lazygit() end, desc = "Lazygit" },
       { "<leader>un", function() require('snacks').notifier.hide() end, desc = "Dismiss All Notifications" },
       { "<c-/>",      function() require('snacks').terminal() end, desc = "Toggle Terminal" },
-      { "<c-_>",      function() require('snacks').terminal() end, desc = "which_key_ignore" },
       { "]]",         function() require('snacks').words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
       { "[[",         function() require('snacks').words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
       {
@@ -146,13 +184,13 @@ return {
         pattern = "VeryLazy",
         callback = function()
           -- Setup some globals for debugging (lazy-loaded)
-          _G.dd = function(...)
-            require('snacks').debug.inspect(...)
-          end
-          _G.bt = function()
-            require('snacks').debug.backtrace()
-          end
-          vim.print = _G.dd -- Override print to use snacks for `:=` command
+          -- _G.dd = function(...)
+          --   require('snacks').debug.inspect(...)
+          -- end
+          -- _G.bt = function()
+          --   require('snacks').debug.backtrace()
+          -- end
+          -- vim.print = _G.dd -- Override print to use snacks for `:=` command
 
           -- Create some toggle mappings
           require('snacks').toggle.option("spell", { name = "Spelling" }):map("<leader>us")
@@ -237,6 +275,16 @@ return {
 			},
 		},
 	},
+
+  -- todo_comments
+  {
+    "folke/todo-comments.nvim",
+    opts= {},
+    keys = {
+      { "<leader>st", function() require('snacks').picker.todo_comments() end, desc = "Todo" },
+      { "<leader>sT", function () require('snacks').picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } }) end, desc = "Todo/Fix/Fixme" },
+    },
+  },
 
 	-- markdown rendering
 	{

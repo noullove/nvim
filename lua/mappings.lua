@@ -85,3 +85,4 @@ map("n", "<leader>n", function() require('snacks').picker.notifications() end, {
 map("n", "<leader>e", function() require('snacks').explorer() end, { desc = "File Explorer" })
 map("n", "<leader>fb", function() require('snacks').picker.buffers() end, { desc = "Buffers" })
 map("n", "<leader>ff", function() require('snacks').picker.files() end, { desc = "Find Files" })
+map("n", "<leader>fz", function() require('snacks').picker.zoxide() end, { desc = "Zoxide" })
