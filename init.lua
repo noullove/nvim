@@ -22,10 +22,10 @@ require("lazy").setup({
 		"NvChad/NvChad",
 		lazy = false,
 		branch = "v2.5",
-		import = "nvchad.plugins",
+		import = "plugins.nvchad",
 	},
 
-	{ import = "plugins" },
+	{ import = "plugins.user" },
 }, lazy_config)
 
 -- 플러그인 설정 변경

@@ -1,8 +1,4 @@
 return {
-  { "nvim-tree/nvim-tree.lua", enabled = false },
-  { "nvim-telescope/telescope.nvim", enabled = false },
-  { "lukas-reineke/indent-blankline.nvim", enabled = false },
-
 	{
 		"stevearc/conform.nvim",
 		event = "BufWritePre", -- uncomment for format on save
@@ -394,5 +390,4 @@ return {
       cmd_abbrev("helpclose", "FloatingHelpClose")
     end,
   },
-
 }
