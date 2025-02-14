@@ -4,7 +4,7 @@ require("nvchad.mappings")
 local map = vim.keymap.set
 local unmap = vim.keymap.del
 
--- 플러그인 키 맵핑 삭제
+-- disabled 플러그인 키 맵핑 삭제
 -- nvim-tree
 unmap("n", "<C-n>")
 unmap("n", "<leader>e")
@@ -27,7 +27,10 @@ unmap("n", "<leader>fa")
 -- 사용자 키 맵핑
 -- visual block mode
 map('n', '<C-v>', '<C-v>', { noremap = true, silent = true })
-map({ 'n', 'v' }, '<C-a>', 'ggVG', { noremap = true, silent = true })
+-- 전체선택
+map('n', '<C-a>', 'ggVG', { noremap = true, silent = true })
+-- 새로운 탭 생성
+map('n', '<leader>t', '<cmd>tabnew<CR>', { desc = "new tab", noremap = true, silent = true })
 
 -- 한글모드 일때도 ESC 로 영문모드로 전환
 map("n", "<Esc>", function()
@@ -80,9 +83,57 @@ map({ "n", "v" }, "<RightMouse>", function()
 	require("menu").open(options, { mouse = true, border = true })
 end, {})
 
--- snacks
-map("n", "<leader>n", function() require('snacks').picker.notifications() end, { desc = "Notification History" })
+-- snacks remapping
 map("n", "<leader>e", function() require('snacks').explorer() end, { desc = "File Explorer" })
+map("n", "<leader>n", function() require('snacks').picker.notifications() end, { desc = "Notification History" })
 map("n", "<leader>fb", function() require('snacks').picker.buffers() end, { desc = "Buffers" })
 map("n", "<leader>ff", function() require('snacks').picker.files() end, { desc = "Find Files" })
 map("n", "<leader>fz", function() require('snacks').picker.zoxide() end, { desc = "Zoxide" })
+
+-- pandoc
+map('n', '<leader>p', [[:lua PandocConvert()<CR>]], { desc = "pandoc convert", noremap = true, silent = true })
+
+function PandocConvert()
+
+  if vim.bo.filetype ~= "markdown" then
+    vim.notify("PandocConvert can only be used with markdown files", vim.log.levels.WARN)
+    return
+  end
+
+  local filename = vim.fn.expand('%:p')
+  local filedir = vim.fn.expand('%:p:h')
+  local output = vim.fn.expand('%:p:r') .. '.pdf'
+
+  -- Change the working directory to the file's directory
+  vim.fn.chdir(filedir)
+
+  -- Remove the notification if you don't want it
+  vim.notify('Converting ' .. string.format("%q", filename) .. ' to ' .. string.format("%q", output))
+
+  local command = string.format(
+    'pandoc --template=$HOME/.config/pandoc/templates/document.tex --lua-filter=$HOME/.config/pandoc/filters/parse-module.lua --lua-filter=$HOME/.config/pandoc/filters/table.lua --pdf-engine=xelatex --pdf-engine-opt="-shell-escape" --pdf-engine-opt="-output-directory=$TMPDIR" --metadata=plantuml_path:"$HOME/.config/pandoc/filters/plantuml.jar" --metadata=mainfont:NanumGothic --metadata=monofont:D2Coding --metadata=toc:true --metadata=toc_depth:3 --metadata=number_sections:false --from=markdown+hard_line_breaks -o %q %q',
+    output, filename
+  )
+
+  -- Use vim.fn.jobstart for non-blocking execution
+  vim.fn.jobstart(command, {
+    on_stdout = function(_, data)
+      if data then
+        print(table.concat(data, "\n"))
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        print("Error: " .. table.concat(data, "\n"))
+      end
+    end,
+    on_exit = function(_, code)
+      if code == 0 then
+        print("Conversion successful: " .. string.format("%q", output))
+        vim.cmd('silent !open ' .. string.format("%q", output))
+      else
+        print("Conversion failed with exit code: " .. code)
+      end
+    end,
+  })
+end

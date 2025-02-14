@@ -61,20 +61,32 @@ autocmd("WinLeave", {
 })
 
 -- 도움말 창은 항상 오른쪽 창 분할로 표시
-autocmd("BufWinEnter", {
-	pattern = "*",
-	callback = function()
-		if vim.bo.buftype == "help" then
-			vim.cmd("wincmd L")
-		end
-	end,
-})
+-- autocmd("BufWinEnter", {
+-- 	pattern = "*",
+-- 	callback = function()
+-- 		if vim.bo.buftype == "help" then
+-- 			vim.cmd("wincmd L")
+-- 		end
+-- 	end,
+-- })
 
--- Trouble 창이 열릴 때 CursorLine을 Visual과 동일하게 링크
+-- trouble 창이 열릴 때 CursorLine을 Visual과 동일하게 링크
 autocmd("FileType", {
     pattern = "Trouble",
     callback = function()
         -- Trouble 창에서만 CursorLine을 Visual로 링크
         vim.api.nvim_command("hi! link CursorLine Visual")
     end,
+})
+
+-- 종료시 prompt, nofile buffer 삭제 (avante, timerly 등)
+autocmd("QuitPre", {
+  callback = function()
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.bo[buf].buftype == "prompt" or vim.bo[buf].buftype == "nofile" then
+        vim.api.nvim_buf_delete(buf, { force = true })
+      end
+    end
+  end,
 })

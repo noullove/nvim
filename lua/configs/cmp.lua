@@ -17,6 +17,7 @@ cmp.setup({
     { name = "nvim_lua" },
     { name = "path" },
     { name = "luasnip" },
+    { name = "render-makrdown" },
     -- { name = "buffer" },
   },
   window = {
@@ -28,6 +29,8 @@ cmp.setup({
 -- cmdline 자동완성 설정
 cmp.setup.cmdline(":", {
   sources = cmp.config.sources({
+    { name = "nvim_lsp" },
+    { name = "nvim_lua" },
     { name = "cmdline" },
   }),
 })

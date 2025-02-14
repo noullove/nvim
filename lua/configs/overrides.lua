@@ -28,12 +28,32 @@ require("nvim-treesitter.configs").setup({
 	auto_install = true,
 })
 
+-- mason 설정
 require("mason").setup({
   ui = {
     border = "rounded",
   }
 })
 
+-- which-key 설정
 require("which-key").setup({
 	preset = "modern",
 })
+
+-- markdown preview 설정
+require("snacks").toggle
+  .new({
+    id = "markdown_preview",
+    name = "Markdown Preview",
+    get = function()
+      return require("render-markdown.state").enabled or false
+    end,
+    set = function(state)
+      if state then
+        require("render-markdown.api").enable()
+        -- require('snacks').image.markdown()
+      else
+        require("render-markdown").disable()
+      end
+    end,
+  }):map("<leader>um")
