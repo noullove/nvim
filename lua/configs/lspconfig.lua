@@ -1,4 +1,3 @@
-local lspconfig = require("lspconfig")
 local nvlsp = require("nvchad.configs.lspconfig")
 local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
@@ -17,29 +16,35 @@ local servers = {
   pyright = {},
   marksman = {},
   lua_ls = {
-    Lua = {
-      diagnostics = {
-        globals = { "vim" },
-      },
-      workspace = {
-        library = {
-          vim.fn.expand "$VIMRUNTIME/lua",
-          vim.fn.expand "$VIMRUNTIME/lua/vim/lsp",
-          vim.fn.stdpath "data" .. "/lazy/ui/nvchad_types",
-          vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy",
+    settings = {
+      Lua = {
+        diagnostics = {
+          globals = { "vim" },
         },
-        maxPreload = 100000,
-        preloadFileSize = 10000,
+        completion = {
+          enable = true
+        },
+        workspace = {
+          library = {
+            vim.fn.expand "$VIMRUNTIME/lua",
+            vim.fn.expand "$VIMRUNTIME/lua/vim/lsp",
+            -- vim.fn.stdpath "data" .. "/lazy/ui/nvchad_types",
+            -- vim.fn.stdpath "data" .. "/lazy/lazy.nvim/lua/lazy",
+            vim.fn.stdpath "data" .. "/lazy",
+            "${3rd}/luv/library",
+          },
+          maxPreload = 100000,
+          preloadFileSize = 10000,
+        },
       },
-    },
+    }
   },
 }
 
--- 각 LSP별 설정 적용
-for lsp, config in pairs(servers) do
-  lspconfig[lsp].setup(vim.tbl_deep_extend("force", {
-    on_attach = nvlsp.on_attach,
-    on_init = nvlsp.on_init,
-    capabilities = lsp_capabilities,
-  }, config))
+for name, opts in pairs(servers) do
+  opts.on_init = nvlsp.on_init
+  opts.on_attach = nvlsp.on_attach
+  opts.capabilities = lsp_capabilities
+
+  require("lspconfig")[name].setup(opts)
 end
