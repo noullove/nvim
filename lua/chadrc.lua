@@ -67,7 +67,7 @@ M.ui = {
 				-- Get the virtual column number
 				local virtcol = vim.fn.virtcol(".")
 
-				return "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# C:%v L:%l/%L %p%%"
+				return "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# C:%v L:%l/%L " .. sep_l .. "%#St_pos_icon# %#St_pos_text# %p%%"
 			end,
 			encoding = function()
 				local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
@@ -91,6 +91,7 @@ M.mason = {
 		"pyright",
 		"isort",
 		"shfmt",
+    "marksman",
 	},
 }
 

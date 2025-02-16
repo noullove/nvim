@@ -90,6 +90,17 @@ map("n", "<leader>fb", function() require('snacks').picker.buffers() end, { desc
 map("n", "<leader>ff", function() require('snacks').picker.files() end, { desc = "Find Files" })
 map("n", "<leader>fz", function() require('snacks').picker.zoxide() end, { desc = "Zoxide" })
 
+-- theme picker
+map("n", "<leader>th", function ()
+  require('snacks').picker.select(
+    require('nvchad.utils').list_themes(),
+    {},
+    function(item)
+     require('nvchad.themes.utils').reload_theme(item)
+    end
+  )
+end, { desc = "theme picker" })
+
 -- pandoc
 map('n', '<leader>p', [[:lua PandocConvert()<CR>]], { desc = "pandoc convert", noremap = true, silent = true })
 

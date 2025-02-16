@@ -2,6 +2,40 @@ require("nvchad.autocmds")
 
 -- 변수 설정
 local autocmd = vim.api.nvim_create_autocmd
+local user_command = vim.api.nvim_create_user_command
+
+-- Only replace cmds, not search; only replace the first instance
+local function cmd_abbrev(abbrev, expansion)
+  local cmd = 'cabbr ' .. abbrev .. ' <c-r>=(getcmdpos() == 1 && getcmdtype() == ":" ? "' .. expansion .. '" : "' .. abbrev .. '")<CR>'
+  vim.cmd(cmd)
+end
+
+-- Redirect `:h` to `:Help`
+cmd_abbrev('h', 'Help')
+
+-- 사용자 Help 명령어 생성
+user_command(
+  'Help',
+  function(opts)
+    require('snacks').win({
+      width = 0.6,
+      height = 0.6,
+      border = "rounded",
+      wo = {
+        spell = false,
+        wrap = false,
+        signcolumn = "yes",
+        statuscolumn = " ",
+        conceallevel = 3,
+      },
+      on_win = function()
+        vim.cmd('setlocal buftype=help') -- 버퍼를 help 타입으로 설정
+        vim.cmd('help ' .. opts.args) -- 도움말 표시
+      end,
+    })
+  end,
+  { nargs = 1 }  -- 하나의 인수를 받도록 설정
+)
 
 -- IME 설정 (입력모드가 아닐 경우 영문설정)
 -- im-select 설치 필요
@@ -52,31 +86,23 @@ autocmd("WinLeave", {
 			local buf_id = vim.api.nvim_win_get_buf(win_id)
 			local buftype = vim.bo[buf_id].buftype
 
-			-- 터미널(floating terminal) 윈도우만 숨김
-			if buftype == "terminal" then
+			-- floating 윈도우 숨김
+			if buftype == "terminal" or buftype == "help" then
 				vim.api.nvim_win_hide(win_id)
 			end
 		end
 	end,
 })
 
--- 도움말 창은 항상 오른쪽 창 분할로 표시
--- autocmd("BufWinEnter", {
--- 	pattern = "*",
--- 	callback = function()
--- 		if vim.bo.buftype == "help" then
--- 			vim.cmd("wincmd L")
--- 		end
--- 	end,
--- })
-
--- trouble 창이 열릴 때 CursorLine을 Visual과 동일하게 링크
+-- 창이 열릴 때 CursorLine을 Visual과 동일하게 링크
 autocmd("FileType", {
-    pattern = "Trouble",
-    callback = function()
-        -- Trouble 창에서만 CursorLine을 Visual로 링크
-        vim.api.nvim_command("hi! link CursorLine Visual")
-    end,
+  pattern = "*",
+  callback = function()
+    if vim.bo.buftype == "nofile" then
+      -- nofile 창에서만 CursorLine을 Visual로 링크
+      vim.api.nvim_command("hi! link CursorLine Visual")
+    end
+  end,
 })
 
 -- 종료시 prompt, nofile buffer 삭제 (avante, timerly 등)

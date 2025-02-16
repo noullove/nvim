@@ -282,6 +282,19 @@ return {
     },
   },
 
+  -- outline
+  {
+    "hedyhli/outline.nvim",
+    lazy = true,
+    cmd = { "Outline", "OutlineOpen" },
+    keys = { -- Example mapping to toggle outline
+      { "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
+    },
+    opts = {
+      -- Your setup opts here
+    },
+  },
+
 	-- markdown rendering
 	{
 		"MeanderingProgrammer/render-markdown.nvim",
@@ -291,32 +304,10 @@ return {
     },
     opts = {
       enabled = false,
-      file_types = { "markdown", "Avante" },
+      file_types = { "markdown" },
     },
-    ft = { "markdown", "Avante" },
+    ft = { "markdown" },
 	},
-
-  -- copilot
-  {
-    "yetone/avante.nvim",
-    event = "VeryLazy",
-    lazy = false,
-    version = false, -- Set this to "*" to always pull the latest release version, or set it to false to update to the latest code changes.
-    opts = {
-      -- add any opts here
-      -- for example
-      provider = "copilot",
-    },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = "make",
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "github/copilot.vim"
-    }
-  },
 
   -- showkeys
 	{
@@ -342,52 +333,5 @@ return {
     keys = {
       { "<A-t>", "<cmd>TimerlyToggle<cr>", desc = "Timerly" },
     },
-  },
-
-  -- floating help
-  {
-    "Tyler-Barham/floating-help.nvim",
-    event = { "VeryLazy" },
-    cmds = { "FloatingHelpClose" },
-    config = function()
-      local fh = require "floating-help"
-      fh.setup {
-        -- Defaults
-        width = 80, -- Whole numbers are columns/rows
-        height = 0.8, -- Decimals are a percentage of the editor
-        position = "C", -- NW,N,NW,W,C,E,SW,S,SE (C==center)
-        border = "rounded", -- rounded,double,single
-        -- onload = function(query_type) end,
-      }
-
-      -- Create a keymap for toggling the help window
-      vim.keymap.set("n", "<F1>", fh.toggle)
-      -- Create a keymap to search cppman for the word under the cursor
-      vim.keymap.set("n", "<F2>", function()
-        fh.open("t=cppman", vim.fn.expand "<cword>")
-      end)
-      -- Create a keymap to search man for the word under the cursor
-      vim.keymap.set("n", "<F3>", function()
-        fh.open("t=man", vim.fn.expand "<cword>")
-      end)
-
-      -- Only replace cmds, not search; only replace the first instance
-      local function cmd_abbrev(abbrev, expansion)
-        local cmd = "cabbr "
-          .. abbrev
-          .. ' <c-r>=(getcmdpos() == 1 && getcmdtype() == ":" ? "'
-          .. expansion
-          .. '" : "'
-          .. abbrev
-          .. '")<CR>'
-        vim.cmd(cmd)
-      end
-
-      -- Redirect `:h` to `:FloatingHelp`
-      cmd_abbrev("h", "FloatingHelp")
-      cmd_abbrev("help", "FloatingHelp")
-      cmd_abbrev("helpc", "FloatingHelpClose")
-      cmd_abbrev("helpclose", "FloatingHelpClose")
-    end,
   },
 }
