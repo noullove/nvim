@@ -17,6 +17,16 @@ cmd_abbrev('h', 'Help')
 user_command(
   'Help',
   function(opts)
+    local help_topic = opts.args
+
+    -- 도움말 항목이 존재하는지 확인
+    local success = pcall(vim.cmd, "help " .. help_topic)
+
+    if not success then
+      vim.notify("Help topic not found: " .. help_topic, vim.log.levels.ERROR)
+      return
+    end
+
     require('snacks').win({
       width = 0.6,
       height = 0.6,
@@ -30,7 +40,7 @@ user_command(
       },
       on_win = function()
         vim.cmd('setlocal buftype=help') -- 버퍼를 help 타입으로 설정
-        vim.cmd('help ' .. opts.args) -- 도움말 표시
+        vim.cmd('help ' .. help_topic) -- 도움말 표시
       end,
     })
   end,
@@ -61,18 +71,27 @@ autocmd("BufReadPost", {
 	end,
 })
 
--- inlay 힌트 설정
-autocmd("LspAttach", {
-	desc = "Enable inlay hints",
-	callback = function(event)
-		local id = vim.tbl_get(event, "data", "client_id")
-		local client = id and vim.lsp.get_client_by_id(id)
-		if client == nil or not client.supports_method("textDocument/inlayHint") then
-			return
-		end
+-- lsp 관련 inlay 힌트 및 diagnostics floating 설정 
+vim.api.nvim_create_autocmd("LspAttach", {
+  desc = "Enable inlay hints and floating diagnostics on CursorHold",
+  callback = function(event)
+    local id = vim.tbl_get(event, "data", "client_id")
+    local client = id and vim.lsp.get_client_by_id(id)
+    if client == nil or not client.supports_method("textDocument/inlayHint") then
+      return
+    end
 
-		vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
-	end,
+    -- Inlay Hint 활성화
+    vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+
+    -- CursorHold 이벤트에서 Floating Diagnostics 자동 표시
+    vim.api.nvim_create_autocmd("CursorHold", {
+      buffer = event.buf, -- 해당 버퍼에서만 동작
+      callback = function()
+        vim.diagnostic.open_float(nil, { focusable = false })
+      end,
+    })
+  end,
 })
 
 -- floating window 숨기기 (lazygit 등)

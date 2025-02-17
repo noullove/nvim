@@ -334,4 +334,14 @@ return {
       { "<A-t>", "<cmd>TimerlyToggle<cr>", desc = "Timerly" },
     },
   },
+
+  -- keyboard effect
+  {
+    "jackplus-xyz/player-one.nvim",
+    opts = {},
+    cmd = "PlayerOneToggle",
+    keys = {
+      { "<A-k>", "<cmd>PlayerOneToggle<cr>", desc = "keyboard effect" }
+    },
+  }
 }
