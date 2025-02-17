@@ -278,7 +278,7 @@ return {
     opts= {},
     keys = {
       { "<leader>st", function() require('snacks').picker.todo_comments() end, desc = "Todo" },
-      { "<leader>sT", function () require('snacks').picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } }) end, desc = "Todo/Fix/Fixme" },
+      { "<leader>sT", function() require('snacks').picker.todo_comments({ keywords = { "TODO", "FIX", "FIXME" } }) end, desc = "Todo/Fix/Fixme" },
     },
   },
 
@@ -312,15 +312,15 @@ return {
   -- showkeys
 	{
     "nvzone/showkeys",
-    cmd = "ShowkeysToggle",
     opts = {
       timeout = 1,
       maxkeys = 5,
       position = "top-right",
     },
-    keys = {
-      { "<leader>k", "<cmd>ShowkeysToggle<cr>", desc = "Show keys" },
-    },
+    dependencies = {
+      -- keyboard effect
+      "jackplus-xyz/player-one.nvim",
+    }
   },
 
   -- timerly
@@ -334,14 +334,4 @@ return {
       { "<A-t>", "<cmd>TimerlyToggle<cr>", desc = "Timerly" },
     },
   },
-
-  -- keyboard effect
-  {
-    "jackplus-xyz/player-one.nvim",
-    opts = {},
-    cmd = "PlayerOneToggle",
-    keys = {
-      { "<A-k>", "<cmd>PlayerOneToggle<cr>", desc = "keyboard effect" }
-    },
-  }
 }

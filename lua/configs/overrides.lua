@@ -55,4 +55,23 @@ require("snacks").toggle
         require("render-markdown").disable()
       end
     end,
-  }):map("<leader>um")
+}):map("<leader>um")
+
+-- keyboard effect 설정
+require("snacks").toggle
+  .new({
+    id = "keyboard_effect",
+    name = "Keyboard Effect",
+    get = function ()
+      return require("showkeys.state").visible
+    end,
+    set = function(state)
+      if state then
+        require("showkeys").open()
+        require("player-one.api").enable()
+      else
+        require("showkeys").close()
+        require("player-one.api").disable()
+      end
+    end
+}):map("<leader>uk")

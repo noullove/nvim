@@ -19,14 +19,6 @@ user_command(
   function(opts)
     local help_topic = opts.args
 
-    -- 도움말 항목이 존재하는지 확인
-    local success = pcall(vim.cmd, "help " .. help_topic)
-
-    if not success then
-      vim.notify("Help topic not found: " .. help_topic, vim.log.levels.ERROR)
-      return
-    end
-
     require('snacks').win({
       width = 0.6,
       height = 0.6,
@@ -40,7 +32,11 @@ user_command(
       },
       on_win = function()
         vim.cmd('setlocal buftype=help') -- 버퍼를 help 타입으로 설정
-        vim.cmd('help ' .. help_topic) -- 도움말 표시
+        local success = pcall(vim.cmd, 'help ' .. help_topic) -- 도움말 표시
+        if not success then
+          vim.cmd('q')
+          vim.notify("Help topic not found: " .. help_topic, vim.log.levels.ERROR, { title = "Help" })
+        end
       end,
     })
   end,
@@ -120,18 +116,6 @@ autocmd("FileType", {
     if vim.bo.buftype == "nofile" then
       -- nofile 창에서만 CursorLine을 Visual로 링크
       vim.api.nvim_command("hi! link CursorLine Visual")
-    end
-  end,
-})
-
--- 종료시 prompt, nofile buffer 삭제 (avante, timerly 등)
-autocmd("QuitPre", {
-  callback = function()
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-      local buf = vim.api.nvim_win_get_buf(win)
-      if vim.bo[buf].buftype == "prompt" or vim.bo[buf].buftype == "nofile" then
-        vim.api.nvim_buf_delete(buf, { force = true })
-      end
     end
   end,
 })
