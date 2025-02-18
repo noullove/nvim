@@ -51,6 +51,7 @@ require("snacks").toggle
     set = function(state)
       if state then
         require("render-markdown.api").enable()
+        require('snacks.image.doc').attach(vim.api.nvim_get_current_buf())
       else
         require("render-markdown").disable()
       end

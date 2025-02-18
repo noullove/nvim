@@ -107,43 +107,66 @@ map('n', '<leader>p', [[:lua PandocConvert()<CR>]], { desc = "pandoc convert", n
 function PandocConvert()
 
   if vim.bo.filetype ~= "markdown" then
-    vim.notify("PandocConvert can only be used with markdown files", vim.log.levels.WARN)
+    vim.notify("PandocConvert can only be used with markdown files", vim.log.levels.WARN, { title = "Pandoc Convert" })
     return
   end
 
   local filename = vim.fn.expand('%:p')
   local filedir = vim.fn.expand('%:p:h')
-  local output = vim.fn.expand('%:p:r') .. '.pdf'
+  local output = vim.fn.expand('$HOME') .. '/Downloads/' .. vim.fn.expand('%:t:r') .. '.pdf'
 
   -- Change the working directory to the file's directory
   vim.fn.chdir(filedir)
 
   -- Remove the notification if you don't want it
-  vim.notify('Converting ' .. string.format("%q", filename) .. ' to ' .. string.format("%q", output))
+  vim.notify('Converting ' .. string.format("%q", filename) .. ' to ' .. string.format("%q", output), vim.log.levels.INFO, { title = "Pandoc Convert" })
 
   local command = string.format(
-    'pandoc --template=$HOME/.config/pandoc/templates/document.tex --lua-filter=$HOME/.config/pandoc/filters/parse-module.lua --lua-filter=$HOME/.config/pandoc/filters/table.lua --pdf-engine=xelatex --pdf-engine-opt="-shell-escape" --pdf-engine-opt="-output-directory=$TMPDIR" --metadata=plantuml_path:"$HOME/.config/pandoc/filters/plantuml.jar" --metadata=mainfont:NanumGothic --metadata=monofont:D2Coding --metadata=toc:true --metadata=toc_depth:3 --metadata=number_sections:false --from=markdown+hard_line_breaks -o %q %q',
+    'pandoc --template=$HOME/.config/pandoc/templates/document.tex --lua-filter=$HOME/.config/pandoc/filters/parse-module.lua --lua-filter=$HOME/.config/pandoc/filters/table.lua --pdf-engine=xelatex --pdf-engine-opt="-shell-escape" --pdf-engine-opt="-output-directory=$TMPDIR" --metadata=graphicspath:$HOME/.config/pandoc/templates/assets/ --metadata=plantuml_path:"$HOME/.config/pandoc/filters/plantuml.jar" --metadata=mainfont:NanumGothic --metadata=monofont:D2Coding --metadata=toc:true --metadata=toc_depth:3 --metadata=number_sections:false --from=markdown+hard_line_breaks -o %q %q',
     output, filename
   )
 
   -- Use vim.fn.jobstart for non-blocking execution
+  -- 테이블을 사용하여 출력 저장
+  local stdout_table = {}
+  local stderr_table = {}
+
   vim.fn.jobstart(command, {
     on_stdout = function(_, data)
       if data then
-        print(table.concat(data, "\n"))
+        for _, line in ipairs(data) do
+          if type(line) == "string" and line ~= "" then
+            table.insert(stdout_table, line)
+          end
+        end
       end
     end,
     on_stderr = function(_, data)
       if data then
-        print("Error: " .. table.concat(data, "\n"))
+        for _, line in ipairs(data) do
+          if type(line) == "string" and line ~= "" then
+            table.insert(stderr_table, line)
+          end
+        end
       end
     end,
     on_exit = function(_, code)
+      -- 테이블을 문자열로 변환
+      local stdout_str = table.concat(stdout_table, "")
+      local stderr_str = table.concat(stderr_table, "")
+
+      if stdout_str ~= "" then
+        vim.notify(stdout_str, vim.log.levels.INFO, { title = "Pandoc Convert" })
+      end
+      if stderr_str ~= "" then
+        vim.notify(stderr_str, vim.log.levels.ERROR, { title = "Pandoc Convert" })
+      end
+
       if code == 0 then
-        print("Conversion successful: " .. string.format("%q", output))
+        vim.notify("Conversion successful: " .. string.format("%q", output), vim.log.levels.INFO, { title = "Pandoc Convert" })
         vim.cmd('silent !open ' .. string.format("%q", output))
       else
-        print("Conversion failed with exit code: " .. code)
+        vim.notify("Conversion failed with exit code: " .. code, vim.log.levels.ERROR, { title = "Pandoc Convert" })
       end
     end,
   })
