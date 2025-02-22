@@ -1,69 +1,68 @@
-require("luasnip.loaders.from_vscode").lazy_load()
+dofile(vim.g.base46_cache .. "cmp")
 
 local cmp = require("cmp")
 
-local formatting_style = {
-  fields = { "kind", "abbr", "menu" },
+local options = {
+	completion = { completeopt = "menu,menuone" },
 
-  format = function(entry, item)
-    local icons = require("nvchad.icons.lspkind")
-    local icon = icons[item.kind] or ""
+	-- 창 설정 추가
+	window = {
+		completion = {
+			border = "single",
+			winhighlight = "Normal:Pmenu,FloatBorder:CmpDocBorder,Search:None,CursorLine:PmenuSel",
+		},
+		documentation = {
+			border = "single",
+		},
+	},
 
-    -- 소스 정보 추가 (LSP인지 확인)
-    local source_name = entry.source.name
-    local source_icon = {
-      nvim_lsp = '',
-      nvim_lua = '',
-      luasnip = '',
-      buffer = '',
-      path = '',
-    }
+	snippet = {
+		expand = function(args)
+			require("luasnip").lsp_expand(args.body)
+		end,
+	},
 
-    -- 최대 너비 설정 (예: 10자)
-    local kind_text = string.format("%-12s", item.kind or "")
-    local source_text = source_icon[source_name] or ""
+	mapping = {
+		["<C-p>"] = cmp.mapping.select_prev_item(),
+		["<C-n>"] = cmp.mapping.select_next_item(),
+		["<C-d>"] = cmp.mapping.scroll_docs(-4),
+		["<C-f>"] = cmp.mapping.scroll_docs(4),
+		["<C-Space>"] = cmp.mapping.complete(),
+		["<C-e>"] = cmp.mapping.close(),
 
-    -- 일관된 정렬을 위한 문자열 조합
-    item.menu = kind_text .. source_text
-    item.kind = icon
+		["<CR>"] = cmp.mapping.confirm({
+			behavior = cmp.ConfirmBehavior.Insert,
+			select = true,
+		}),
 
-    return item
-  end,
+		["<Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.select_next_item()
+			elseif require("luasnip").expand_or_jumpable() then
+				require("luasnip").expand_or_jump()
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
+
+		["<S-Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.select_prev_item()
+			elseif require("luasnip").jumpable(-1) then
+				require("luasnip").jump(-1)
+			else
+				fallback()
+			end
+		end, { "i", "s" }),
+	},
+
+	sources = {
+		{ name = "nvim_lsp" },
+		{ name = "luasnip" },
+		{ name = "buffer" },
+		{ name = "nvim_lua" },
+		{ name = "path" },
+	},
 }
 
--- nvim-cmp 설정
-cmp.setup({
-  formatting = formatting_style,
-  snippet = {
-    expand = function(args)
-      require("luasnip").lsp_expand(args.body) -- Snippet exntend
-    end,
-  },
-  mapping = {
-    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-    ["<Tab>"] = cmp.mapping.select_next_item(),
-    ["<Enter>"] = cmp.mapping.confirm({ select = true }),
-    ["<Esc>"] = cmp.mapping.abort(),
-  },
-  sources = {
-    { name = "path" },
-    { name = "luasnip" },
-    { name = "nvim_lsp", keyword_length = 1 },
-    { name = "nvim_lua", keyword_length = 2 },
-    { name = "buffer", keyword_length = 3 },
-  },
-  window = {
-    completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered()
-  },
-})
-
--- cmdline 자동완성 설정
-cmp.setup.cmdline(":", {
-  enabled = false, -- noice cmdline 사용
-  sources = cmp.config.sources({
-    { name = "cmdline" },
-    { name = "nvim_lsp", keyword_length = 1 },
-    { name = "nvim_lua", keyword_length = 2 },
-  }),
-})
+return vim.tbl_deep_extend("force", require("nvchad.cmp"), options)

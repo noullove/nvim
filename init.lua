@@ -18,18 +18,8 @@ local lazy_config = require("configs.lazy")
 
 -- 플러그인 로드
 require("lazy").setup({
-	{
-		"NvChad/NvChad",
-		lazy = false,
-		branch = "v2.5",
-		import = "plugins.nvchad",
-	},
-
-	{ import = "plugins.user" },
+	import = "plugins",
 }, lazy_config)
-
--- 플러그인 설정 변경
-require("configs.overrides")
 
 -- 테마 및 외관 설정
 dofile(vim.g.base46_cache .. "defaults")

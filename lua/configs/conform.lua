@@ -5,8 +5,8 @@ local options = {
 		cpp = { "clang-format" },
 		css = { "prettier" },
 		html = { "prettier" },
-    python = { "isort" },
-    sh = { "shfmt" },
+		python = { "isort" },
+		sh = { "shfmt" },
 	},
 
 	-- format_on_save = {

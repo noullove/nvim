@@ -19,27 +19,29 @@ M.base46 = {
 			bg = "#000000",
 		},
 	},
+	integrations = { "cmp", "dap", "lsp", "notify", "devicons", "mason", "nvcheatsheet", "treesitter", "trouble" },
 }
-
-M.nvdash = { load_on_startup = false }
 
 M.ui = {
 	cmp = {
 		lspkind_text = true,
-		style = "atom", -- default/flat_light/flat_dark/atom/atom_colored
+		style = "atom",
 		format_colors = {
 			tailwind = true,
 		},
 	},
-	telescope = {
-		style = "bordered",
-	},
+
 	tabufline = {
-		lazyload = false,
+		enabled = true,
+		lazyload = true,
+		order = { "treeOffset", "buffers", "tabs", "btns" },
+		modules = nil,
+		bufwidth = 21,
 	},
+
 	statusline = {
-		theme = "default",
-		separator_style = "arrow",
+		theme = "minimal",
+		separator_style = "default",
 		order = {
 			"mode",
 			"file",
@@ -54,27 +56,41 @@ M.ui = {
 			"cursor",
 		},
 		modules = {
-			cursor = function()
-				local config = require("nvconfig").ui.statusline
-				local sep_style = config.separator_style
-				local utils = require("nvchad.stl.utils")
-
-				local sep_icons = utils.separators
-				local separators = (type(sep_style) == "table" and sep_style) or sep_icons[sep_style]
-
-				local sep_l = separators["left"]
-				local sep_r = separators["right"]
-				-- Get the virtual column number
-				local virtcol = vim.fn.virtcol(".")
-
-				return "%#St_pos_sep#" .. sep_l .. "%#St_pos_icon# %#St_pos_text# C:%v L:%l/%L " .. sep_l .. "%#St_pos_icon# %#St_pos_text# %p%%"
-			end,
 			encoding = function()
 				local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
-				return string.upper(enc)
+				return enc
 			end,
 		},
 	},
+}
+
+M.nvdash = { load_on_startup = false }
+
+M.lsp = { signature = true }
+
+M.cheatsheet = {
+	theme = "grid",
+	excluded_groups = { "terminal (t)", "autopairs", "Nvim", "Opens" },
+}
+
+M.term = {
+	winopts = { number = false },
+	sizes = { sp = 0.5, vsp = 0.5, ["bo sp"] = 0.5, ["bo vsp"] = 0.5 },
+	float = {
+		relative = "editor",
+		row = 0.1,
+		col = 0.2,
+		width = 0.6,
+		height = 0.8,
+		border = "single",
+	},
+}
+
+M.colorify = {
+	enabled = true,
+	mode = "virtual",
+	virt_text = "󱓻 ",
+	highlight = { hex = true, lspvars = true },
 }
 
 M.mason = {
@@ -91,7 +107,7 @@ M.mason = {
 		"pyright",
 		"isort",
 		"shfmt",
-    "marksman",
+		"marksman",
 	},
 }
 

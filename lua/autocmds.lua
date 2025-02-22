@@ -1,53 +1,28 @@
-require("nvchad.autocmds")
-
--- 변수 설정
 local autocmd = vim.api.nvim_create_autocmd
-local user_command = vim.api.nvim_create_user_command
 
--- Only replace cmds, not search; only replace the first instance
-local function cmd_abbrev(abbrev, expansion)
-  local cmd = 'cabbr ' .. abbrev .. ' <c-r>=(getcmdpos() == 1 && getcmdtype() == ":" ? "' .. expansion .. '" : "' .. abbrev .. '")<CR>'
-  vim.cmd(cmd)
-end
+-- user event that loads after UIEnter + only if file buf is there
+autocmd({ "UIEnter", "BufReadPost", "BufNewFile" }, {
+	group = vim.api.nvim_create_augroup("NvFilePost", { clear = true }),
+	callback = function(args)
+		local file = vim.api.nvim_buf_get_name(args.buf)
+		local buftype = vim.api.nvim_get_option_value("buftype", { buf = args.buf })
 
--- Redirect `:h` to `:Help`
-cmd_abbrev('h', 'Help')
+		if not vim.g.ui_entered and args.event == "UIEnter" then
+			vim.g.ui_entered = true
+		end
 
--- 사용자 Help 명령어 생성
-user_command(
-  'Help',
-  function(opts)
-    local help_topic = opts.args
+		if file ~= "" and buftype ~= "nofile" and vim.g.ui_entered then
+			vim.api.nvim_exec_autocmds("User", { pattern = "FilePost", modeline = false })
+			vim.api.nvim_del_augroup_by_name("NvFilePost")
 
-    require('snacks').win({
-      width = 0.6,
-      height = 0.6,
-      border = "rounded",
-      wo = {
-        spell = false,
-        wrap = false,
-        signcolumn = "yes",
-        statuscolumn = " ",
-        conceallevel = 3,
-      },
-      on_win = function()
-        vim.cmd('setlocal buftype=help') -- 버퍼를 help 타입으로 설정
-        local success = pcall(vim.cmd, 'help ' .. help_topic) -- 도움말 표시
-        if not success then
-          vim.cmd('q')
-          vim.notify("Help topic not found: " .. help_topic, vim.log.levels.ERROR, { title = "Help" })
-        end
-      end,
-    })
-  end,
-  { nargs = 1 }  -- 하나의 인수를 받도록 설정
-)
+			vim.schedule(function()
+				vim.api.nvim_exec_autocmds("FileType", {})
 
--- IME 설정 (입력모드가 아닐 경우 영문설정)
--- im-select 설치 필요
-autocmd("ModeChanged", {
-	callback = function()
-		vim.fn.system("im-select com.apple.keylayout.ABC")
+				if vim.g.editorconfig then
+					require("editorconfig").config(args.buf)
+				end
+			end)
+		end
 	end,
 })
 
@@ -65,29 +40,6 @@ autocmd("BufReadPost", {
 			vim.cmd('normal! g`"')
 		end
 	end,
-})
-
--- lsp 관련 inlay 힌트 및 diagnostics floating 설정 
-vim.api.nvim_create_autocmd("LspAttach", {
-  desc = "Enable inlay hints and floating diagnostics on CursorHold",
-  callback = function(event)
-    local id = vim.tbl_get(event, "data", "client_id")
-    local client = id and vim.lsp.get_client_by_id(id)
-    if client == nil or not client.supports_method("textDocument/inlayHint") then
-      return
-    end
-
-    -- Inlay Hint 활성화
-    vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
-
-    -- CursorHold 이벤트에서 Floating Diagnostics 자동 표시
-    vim.api.nvim_create_autocmd("CursorHold", {
-      buffer = event.buf, -- 해당 버퍼에서만 동작
-      callback = function()
-        vim.diagnostic.open_float(nil, { focusable = false })
-      end,
-    })
-  end,
 })
 
 -- floating window 숨기기 (lazygit 등)
@@ -109,13 +61,36 @@ autocmd("WinLeave", {
 	end,
 })
 
--- 창이 열릴 때 CursorLine을 Visual과 동일하게 링크
+-- cursorline 설정
 autocmd("FileType", {
-  pattern = "*",
-  callback = function()
-    if vim.bo.buftype == "nofile" then
-      -- nofile 창에서만 CursorLine을 Visual로 링크
-      vim.api.nvim_command("hi! link CursorLine Visual")
-    end
-  end,
+	pattern = { "trouble", "Outline" },
+	callback = function()
+		vim.api.nvim_command("hi! link CursorLine Visual")
+
+		if vim.bo.filetype == "Outline" then
+			vim.defer_fn(function()
+				vim.wo.cursorline = true
+				vim.wo.cursorlineopt = "both"
+			end, 50) -- 50ms 지연 후 실행
+		end
+	end,
+})
+
+-- lsp 관련 설정
+autocmd("LspAttach", {
+	desc = "lsp settings",
+	callback = function()
+		-- lsp diagnostics 설정
+		vim.diagnostic.config({
+			virtual_text = false, -- 가상 텍스트(코드 옆에 오류 메시지) 비활성화
+		})
+		-- updatetime을 2000ms(2초)로 설정
+		vim.opt.updatetime = 2000
+		-- CursorHold 이벤트에서 floating diagnostics 자동 표시
+		autocmd("CursorHold", {
+			callback = function()
+				require("zendiagram").open()
+			end,
+		})
+	end,
 })
