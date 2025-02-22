@@ -35,7 +35,7 @@ map("n", "<S-tab>", function()
 	require("nvchad.tabufline").prev()
 end, { desc = "buffer goto prev" })
 
-map("n", "<leader>x", function()
+map("n", "<leader>bx", function()
 	require("nvchad.tabufline").close_buffer()
 end, { desc = "buffer close" })
 

@@ -52,6 +52,11 @@ M.on_attach = function(_, bufnr)
 	map("n", "<leader>ra", require("nvchad.lsp.renamer"), opts("NvRenamer"))
 
 	map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts("Code action"))
+
+	-- lsp diagnostics 설정
+	vim.diagnostic.config({
+		virtual_text = false, -- 가상 텍스트(코드 옆에 오류 메시지) 비활성화
+	})
 end
 
 -- disable semanticTokens

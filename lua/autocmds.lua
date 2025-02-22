@@ -75,22 +75,3 @@ autocmd("FileType", {
 		end
 	end,
 })
-
--- lsp 관련 설정
-autocmd("LspAttach", {
-	desc = "lsp settings",
-	callback = function()
-		-- lsp diagnostics 설정
-		vim.diagnostic.config({
-			virtual_text = false, -- 가상 텍스트(코드 옆에 오류 메시지) 비활성화
-		})
-		-- updatetime을 2000ms(2초)로 설정
-		vim.opt.updatetime = 2000
-		-- CursorHold 이벤트에서 floating diagnostics 자동 표시
-		autocmd("CursorHold", {
-			callback = function()
-				require("zendiagram").open()
-			end,
-		})
-	end,
-})
