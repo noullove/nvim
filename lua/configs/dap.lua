@@ -5,7 +5,7 @@ local dapui = require("dapui")
 -- python 어댑터 설정
 dap.adapters.python = {
 	type = "executable",
-	command = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python", -- Mason 설치 경로
+	command = require("user").venv_dir(),
 	args = { "-m", "debugpy.adapter" },
 }
 
@@ -77,7 +77,7 @@ wk.add({
 	{ "<leader>db", dap.step_back, desc = "Step Back" },
 	{ "<leader>di", dap.step_into, desc = "Step Into" },
 	{ "<leader>do", dap.step_over, desc = "Step Over" },
-	{ "<leader>du", dap.step_out, desc = "Step Out" },
+	{ "<leader>dO", dap.step_out, desc = "Step Out" },
 	{ "<leader>dx", dap.terminate, desc = "Terminate" },
 	{ "<leader>dq", dap.close, desc = "Quit" },
 	{ "<leader>dr", dap.run_to_cursor, desc = "Run to Cursor" },

@@ -3,7 +3,7 @@ return {
 	install = { colorscheme = { "nvchad" } },
 
 	ui = {
-		border = "rounded",
+		border = "none",
 		icons = {
 			ft = "",
 			lazy = "󰂠 ",

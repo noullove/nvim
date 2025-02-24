@@ -9,7 +9,7 @@ return {
 			package_installed = " ",
 			package_uninstalled = " ",
 		},
-		border = "rounded",
+		border = "none",
 	},
 
 	max_concurrent_installers = 10,

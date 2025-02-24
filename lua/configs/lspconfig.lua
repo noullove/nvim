@@ -10,7 +10,20 @@ local servers = {
 	clangd = {
 		filetypes = { "c", "cc", "cpp", "objc", "objcpp" },
 	},
-	pyright = {},
+	pyright = {
+		before_init = function(_, config)
+			config.settings.python.pythonPath = require("user").venv_dir()
+		end,
+		settings = {
+			python = {
+				analysis = {
+					autoSearchPaths = true,
+					useLibraryCodeForTypes = true,
+					diagnosticMode = "workspace",
+				},
+			},
+		},
+	},
 	marksman = {},
 	lua_ls = {
 		settings = {
