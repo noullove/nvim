@@ -69,6 +69,10 @@ M.on_attach = function(_, bufnr)
 	-- lsp diagnostics 설정
 	vim.diagnostic.config({
 		virtual_text = false, -- 가상 텍스트(코드 옆에 오류 메시지) 비활성화
+    severity_sort = true,
+    float = {
+      border = 'rounded',
+    },
 	})
 end
 

@@ -83,7 +83,7 @@ map("n", "<Esc>", function()
 end, { desc = "Clear" })
 
 -- command mode
-map("n", ";", ":", { desc = "CMD enter command mode" })
+map({ "n", "v" }, ";", ":", { desc = "CMD enter command mode" })
 
 -- theme picker
 map("n", "<leader>th", function()
@@ -233,3 +233,9 @@ require("snacks").toggle
 		end,
 	})
 	:map("<leader>uk")
+
+-- code companion
+map({ "n", "v" }, "<leader>ai", "<cmd>CodeCompanion<CR>", { desc = "CodeCompanion" })
+map({ "n", "v" }, "<leader>ac", "<cmd>CodeCompanionChat<CR>", { desc = "CodeCompanion Chat" })
+map({ "n", "v" }, "<leader>aa", "<cmd>CodeCompanionActions<CR>", { desc = "CodeCompanion Actions" })
+map({ "n", "v" }, "<leader>av", "<cmd>CodeCompanionCmd<CR>", { desc = "CodeCompanion Cmd" })

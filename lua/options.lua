@@ -60,3 +60,6 @@ o.fileencodings = "utf-8,euc-kr,cp949" -- 파일 인코딩
 o.breakindent = true -- 자동 줄바꿈 시 들여쓰기
 o.linebreak = true -- 줄바꿈 시 단어 단위로
 o.showbreak = "↪ " -- 줄바꿈 시 보여지는 문자
+opt.foldmethod = "expr"
+opt.foldexpr = "nvim_treesitter#foldexpr()" -- nvim-treesitter 파싱 기반
+opt.foldlevelstart = 99 -- 파일 열 때 모든 접기를 펼친 상태로 시작

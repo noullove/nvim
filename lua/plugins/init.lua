@@ -337,6 +337,7 @@ return {
   {
     "olimorris/codecompanion.nvim",
     event = "LspAttach",
+    cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
     config = true,
     dependencies = {
       "nvim-lua/plenary.nvim",
