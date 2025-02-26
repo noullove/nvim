@@ -56,14 +56,14 @@ M.ui = {
 			"cursor",
 		},
 		modules = {
-      encoding = function()
-        local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
-        if enc == "utf-8" then
-          return "" -- UTF-8일 때는 아무것도 표시 안 함
-        end
-        return "  " .. enc:upper()
-      end,
-    },
+			encoding = function()
+				local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc
+				if enc == "utf-8" then
+					return "" -- UTF-8일 때는 아무것도 표시 안 함
+				end
+				return "  " .. enc:upper()
+			end,
+		},
 	},
 }
 

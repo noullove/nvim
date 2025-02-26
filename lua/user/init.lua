@@ -2,8 +2,7 @@ local M = {}
 
 function M.venv_dir()
 	local current_file = vim.api.nvim_buf_get_name(0) or ""
-	local root_dir =
-		require("lspconfig.util").root_pattern(".git", "pyproject.toml", "setup.py")(current_file)
+	local root_dir = require("lspconfig.util").root_pattern(".git", "pyproject.toml", "setup.py")(current_file)
 
 	-- root_pattern()이 nil이면 기본값으로 CWD 사용
 	if root_dir == nil or root_dir == "" then
