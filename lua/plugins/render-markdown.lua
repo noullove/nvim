@@ -7,7 +7,7 @@ return {
 	},
 	opts = {
 		enabled = true,
-		file_types = { "markdown" },
+		file_types = { "markdown", "Avante" },
 	},
-	ft = { "markdown" },
+	ft = { "markdown", "Avante" },
 }

@@ -15,7 +15,7 @@ map("n", "<C-k>", "<C-w>k", { desc = "switch window up" })
 map("n", "<C-s>", "<cmd>w<CR>", { desc = "general save file" })
 map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "general copy whole file" })
 
-map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "toggle nvcheatsheet" })
+map("n", "<leader>uk", "<cmd>NvCheatsheet<CR>", { desc = "NvCheatsheet" })
 
 map("n", "<leader>fm", function()
 	require("conform").format({ lsp_fallback = true })
@@ -86,9 +86,9 @@ end, { desc = "Clear" })
 map({ "n", "v" }, ";", ":", { desc = "CMD enter command mode" })
 
 -- theme picker
-map("n", "<leader>th", function()
+map("n", "<leader>ut", function()
 	require("nvchad.themes").open()
-end, { desc = "theme picker" })
+end, { desc = "NvTheme" })
 
 -- volt menu
 -- Keyboard users
@@ -232,10 +232,4 @@ require("snacks").toggle
 			end
 		end,
 	})
-	:map("<leader>uk")
-
--- code companion
-map({ "n", "v" }, "<leader>ai", "<cmd>CodeCompanion<CR>", { desc = "CodeCompanion" })
-map({ "n", "v" }, "<leader>ac", "<cmd>CodeCompanionChat<CR>", { desc = "CodeCompanion Chat" })
-map({ "n", "v" }, "<leader>aa", "<cmd>CodeCompanionActions<CR>", { desc = "CodeCompanion Actions" })
-map({ "n", "v" }, "<leader>av", "<cmd>CodeCompanionCmd<CR>", { desc = "CodeCompanion Cmd" })
+	:map("<leader>uK")
