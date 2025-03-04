@@ -75,3 +75,10 @@ autocmd("FileType", {
 		end
 	end,
 })
+
+-- zendiagram 설정
+autocmd({ "CursorMoved", "CursorMovedI" }, {
+	callback = function()
+		require("zendiagram").open({ focus = false })
+	end,
+})

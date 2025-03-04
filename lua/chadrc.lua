@@ -6,8 +6,8 @@
 local M = {}
 
 M.base46 = {
-	theme = "onedark",
-	theme_toggle = { "onedark", "tokyonight" },
+	theme = "github_dark",
+	theme_toggle = { "github_dark", "tokyonight" },
 	transparency = true,
 	hl_override = {
 		Comment = { italic = true },
@@ -84,7 +84,7 @@ M.term = {
 		row = 0.1,
 		col = 0.2,
 		width = 0.6,
-		height = 0.8,
+		height = 0.7,
 		border = "single",
 	},
 }
